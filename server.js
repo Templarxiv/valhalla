@@ -9,7 +9,7 @@ if (cluster.isMaster) {
 }
 else {
     const PORT = process.env.PORT || 8080;
-    
+
     const express = require('express'),
         app = express(),
         bodyParser = require('body-parser');
@@ -40,8 +40,14 @@ else {
         var jsBody = req.body;
         console.log(jsBody);
         console.log(jsBody.token);
-        console.log(file[jsBody.token]);
-        file[jsBody.token].Pawns = jsBody.pawns;
+        if (jsBody.token && jsBody.token.length > 3 && file[jsBody.token]) {
+            file[jsBody.token].Pawns = jsBody.pawns;
+        }
+        if (jsBody.token && jsBody.token.length > 3 && !file[jsBody.token]) {
+            file[jsBody.token] = {};
+            file[jsBody.token].Pawns = jsBody.pawns;
+        }
+
         fs.writeFile('./players.json', JSON.stringify(file), function (err) {
             if (err) {
                 res.send(err);
@@ -51,7 +57,6 @@ else {
             console.log('writing to ' + './players.json');
             res.send("Success");
         });
-
     });
     app.listen(PORT);
 }
