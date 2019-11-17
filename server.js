@@ -46,9 +46,11 @@ else {
         res.send(randomPlayer());
     });
     app.post("/UpdatePawns", (req, res) => {
-        let file = fs.readFileSync('./players.json');
-        // var file = require('./players.json');
-        if (!file) file = {};
+        var exists = fs.existsSync('./players.json');
+        var file = {};
+        if (exists)
+            file = require('./players.json');
+        // let file = fs.readFileSync('./players.json');
         console.log(file);
         var jsBody = req.body;
         console.log(jsBody);
