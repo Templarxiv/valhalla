@@ -9,7 +9,6 @@ if (cluster.isMaster) {
 }
 else {
     const PORT = process.env.PORT || 8080;
-
     const express = require('express'),
         app = express(),
         bodyParser = require('body-parser');
@@ -32,7 +31,20 @@ else {
         console.log(resData);
         res.send(resData);
     });
-
+    app.post("/FindOponent", (req, res) => {
+        console.log(req.body);
+        var players = require('./players.json');
+        var array = Object.keys(players);
+        var token = req.body.token;
+        var randomPlayer = () => {
+            var randomToken = array[Math.floor(Math.random() * array.length)];
+            if (randomToken == token) return randomPlayer();
+            var item = players[randomToken];
+            console.log(item);
+            return item;
+        }
+        res.send(randomPlayer());
+    });
     app.post("/UpdatePawns", (req, res) => {
         // let data = fs.readFileSync('players.json');
         var file = require('./players.json');
