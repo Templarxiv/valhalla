@@ -36,14 +36,19 @@ else {
         var players = require('./players.json');
         var array = Object.keys(players);
         var token = req.body.token;
-        var randomPlayer = () => {
-            var randomToken = array[Math.floor(Math.random() * array.length)];
-            if (randomToken == token) return randomPlayer();
-            var item = players[randomToken];
-            console.log(item);
-            return item;
+        if (array.length < 2) {
+            res.send("Not enought players");
         }
-        res.send(randomPlayer());
+        else {
+            var randomPlayer = () => {
+                var randomToken = array[Math.floor(Math.random() * array.length)];
+                if (randomToken == token) return randomPlayer();
+                var item = players[randomToken];
+                console.log(item);
+                return item;
+            }
+            res.send(randomPlayer());
+        }
     });
     app.post("/UpdatePawns", (req, res) => {
         var exists = fs.existsSync('./players.json');
@@ -54,7 +59,6 @@ else {
         console.log(file);
         var jsBody = req.body;
         console.log(jsBody);
-        console.log(jsBody.token);
         if (jsBody.token && jsBody.token.length > 3 && file[jsBody.token]) {
             file[jsBody.token].Pawns = jsBody.pawns;
         }
