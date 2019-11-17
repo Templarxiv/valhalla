@@ -44,6 +44,7 @@ else {
                 var randomToken = array[Math.floor(Math.random() * array.length)];
                 if (randomToken == token) return randomPlayer();
                 var item = players[randomToken];
+                item.token = randomToken;
                 console.log(item);
                 return item;
             }
