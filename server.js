@@ -1,5 +1,5 @@
 var cluster = require('cluster');
-const fs = require('fs');
+
 if (cluster.isMaster) {
     cluster.fork();
     cluster.on('disconnect', function (worker) {
@@ -8,76 +8,37 @@ if (cluster.isMaster) {
     });
 }
 else {
+
+    const mdb = require('./mongo');
+    const db = new mdb.Mongo();
     const PORT = process.env.PORT || 8080;
     const express = require('express'),
         app = express(),
         bodyParser = require('body-parser');
-
-    // support parsing of application/json type post data
     app.use(bodyParser.json());
-
     app.use(express.static(__dirname + '/public'));
-    //support parsing of application/x-www-form-urlencoded post data
     app.use(bodyParser.urlencoded({ extended: true }));
 
-    app.post("/GetPawns", (req, res) => {
+    app.post("/GetPawns", async (req, res) => {
         console.log(req.body);
-        // let data = fs.readFileSync('players.json');
-        var file = require('./players.json');
-        // let players = JSON.parse(file);
-        var resData = "Token not exist";
-        if (file[req.body.token])
-            resData = file[req.body.token].Pawns
-        console.log(resData);
-        res.send(resData);
+        var message = await db.GetPlayer(req.body);
+        if (message.Pawns)
+            res.send(message.Pawns);
+        else res.send("Pawns for this player not found");
     });
-    app.post("/FindOpponent", (req, res) => {
+    app.post("/UpdatePawns", async (req, res) => {
         console.log(req.body);
-        var players = require('./players.json');
-        var array = Object.keys(players);
-        var token = req.body.token;
-        if (array.length < 2) {
-            res.send("Not enought players");
-        }
-        else {
-            var randomPlayer = () => {
-                var randomToken = array[Math.floor(Math.random() * array.length)];
-                if (randomToken == token) return randomPlayer();
-                var item = players[randomToken];
-                item.token = randomToken;
-                console.log(item);
-                return item;
-            }
-            res.send(randomPlayer());
-        }
+        var message = await db.UpdatePawns(req.body);
+        res.send(message);
     });
-    app.post("/UpdatePawns", (req, res) => {
-        var exists = fs.existsSync('./players.json');
-        var file = {};
-        if (exists)
-            file = require('./players.json');
-        // let file = fs.readFileSync('./players.json');
-        console.log(file);
-        var jsBody = req.body;
-        console.log(jsBody);
-        if (jsBody.token && jsBody.token.length > 3 && file[jsBody.token]) {
-            file[jsBody.token].Pawns = jsBody.pawns;
-        }
-        if (jsBody.token && jsBody.token.length > 3 && !file[jsBody.token]) {
-            file[jsBody.token] = {};
-            file[jsBody.token].Pawns = jsBody.pawns;
-        }
+    app.post("/FindOpponent", async (req, res) => {
+        console.log(req.body);
+        var message = await db.GetRandomPlayer(req.body);
+        res.send(message);
+    });
 
-        fs.writeFile('./players.json', JSON.stringify(file), function (err) {
-            if (err) {
-                res.send(err);
-                console.log(err);
-            }
-            console.log(JSON.stringify(file));
-            console.log('writing to ' + './players.json');
-            res.send("Success");
-        });
-    });
     app.listen(PORT);
 }
+
+
 
