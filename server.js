@@ -31,7 +31,7 @@ else {
         console.log(resData);
         res.send(resData);
     });
-    app.post("/FindOponent", (req, res) => {
+    app.post("/FindOpponent", (req, res) => {
         console.log(req.body);
         var players = require('./players.json');
         var array = Object.keys(players);
