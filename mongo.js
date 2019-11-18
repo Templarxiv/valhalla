@@ -15,6 +15,8 @@ class Mongo {
     }
     async UpdatePawns(player) {
         var message = "Error";
+        if (!player.Token) return "Error! No Token";
+        if (!player.Pawns) return "Error! No Pawns";
         var myquery = { Token: player.Token };
         var item = await players.findOne(myquery).exec();
         var newvalues = { $set: { Pawns: player.Pawns } };
@@ -35,11 +37,13 @@ class Mongo {
         return message;
     }
     async GetPlayer(player) {
+        if (!player.Token) return "Error! No Token";
         var myquery = { Token: player.Token };
         var player = await players.findOne(myquery).exec();
         return player;
     }
     async GetRandomPlayer(player) {
+        if (!player.Token) return "Error! No Token";
         var allPlayers = await players.find({}).exec();
         if (allPlayers.length < 2) return "Not enought players";
         var randomPlayer = () => {
