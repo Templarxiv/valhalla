@@ -36,7 +36,18 @@ else {
         var message = await db.GetRandomPlayer(req.body);
         res.send(message);
     });
-
+    app.post("/UpdateSquads", async (req, res) => {
+        console.log(req.body);
+        var message = await db.UpdateSquads(req.body);
+        res.send(message);
+    });
+    app.post("/GetSquads", async (req, res) => {
+        console.log(req.body);
+        var message = await db.GetPlayer(req.body);
+        if (message.Squads)
+            res.send(message.Squads);
+        else res.send("Squads for this player not found");
+    });
     app.listen(PORT);
 }
 

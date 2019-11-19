@@ -2,7 +2,8 @@ var webUri = 'mongodb://dp_admin:admin@cluster0-shard-00-00-e2ity.mongodb.net:27
 var mongoose = require('mongoose');
 var accShema = mongoose.Schema({
     Token: String,
-    Pawns: String
+    Pawns: String,
+    Squads: String
 });
 var players = {};
 class Mongo {
@@ -34,6 +35,22 @@ class Mongo {
                 message = "Created Error";
             console.log(message);
         });
+        return message;
+    }
+    async UpdateSquads(player) {
+        var message = "Error";
+        if (!player.Token) return "Error! No Token";
+        if (!player.Squads) return "Error! No Squads";
+        var myquery = { Token: player.Token };
+        var item = await players.findOne(myquery).exec();
+        var newvalues = { $set: { Squads: player.Squads } };
+        console.log(item);
+        await players.updateOne(myquery, newvalues, (err, item) => {
+            message = "Updated " + player;
+            if (err)
+                message = "Updated Error";
+            console.log(message);
+        })
         return message;
     }
     async GetPlayer(player) {
