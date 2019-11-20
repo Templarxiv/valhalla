@@ -48,6 +48,13 @@ else {
             res.send(message.Squads);
         else res.send("Squads for this player not found");
     });
+    app.get("/GetName", (req, res) => {
+        var names = require('fs').readFileSync('./LatinNames.txt', 'utf-8').split(/\r?\n/);
+        var index = Math.floor(Math.random() * names.length);
+        var name = names[index];
+        var name = name[0].toUpperCase() + name.slice(1);
+        res.send(name);
+    });
     app.listen(PORT);
 }
 
