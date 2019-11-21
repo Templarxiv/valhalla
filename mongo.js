@@ -120,6 +120,7 @@ class Mongo {
         if (!body.Token) return "Error! No Token";
         var myquery = { Token: body.Token };
         var message = await pawns.find(myquery).exec();
+        message.Json="";
         return message;
     }
     async GetRandomSquad(body) {
