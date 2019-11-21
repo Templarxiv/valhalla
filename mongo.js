@@ -30,68 +30,71 @@ class Mongo {
         squads = mongoose.model('squads', squadsShema);
         pawns = mongoose.model('pawns', pawnsShema);
     }
-    async DeletePawn(player) {
+    async DeletePawn(body) {
         var message = "Error";
-        if (!player.PawnKey) return "Error! No PawnKey";
-        var myquery = { PawnKey: player.PawnKey };
+        if (!body.PawnKey) return "Error! No PawnKey";
+        var myquery = { PawnKey: body.PawnKey };
         pawns.findOneAndRemove(myquery, function (err) {
             message = "Error";
         }).exec();
         return message;
     }
-    async UpdatePawn(player) {
+    async UpdatePawn(body) {
         var message = "Error";
-        if (!player.Token) return "Error! No Token";
-        if (!player.PawnKey) return "Error! No PawnKey";
-        if (!player.Score) return "Error! No Score";
-        if (!player.Name) return "Error! No Name";
-        if (!player.Json) return "Error! No Json";
-        var myquery = { PawnKey: player.PawnKey };
-        var item = await players.findOne(myquery).exec();
+        if (!body.Token) return "Error! No Token";
+        if (!body.PawnKey) return "Error! No PawnKey";
+        if (!body.Score) return "Error! No Score";
+        if (!body.Name) return "Error! No Name";
+        if (!body.Json) return "Error! No Json";
+        var myquery = { PawnKey: body.PawnKey };
+        var item = await pawns.findOne(myquery).exec();
         var newvalues = {
             $set: {
-                Name: player.Name,
-                Score: player.Score,
-                PawnKey: player.PawnKey,
-                Token: player.Token,
-                Json: player.Json
+                Name: body.Name,
+                Score: body.Score,
+                PawnKey: body.PawnKey,
+                Token: body.Token,
+                Json: body.Json
             }
         };
         console.log(item);
         if (item)
-            await players.updateOne(myquery, newvalues, (err, item) => {
-                message = "Updated " + player;
+            await pawns.updateOne(myquery, newvalues, (err, item) => {
+                message = "Updated " + body;
                 if (err)
                     message = "Updated Error";
                 console.log(message);
             })
-        else await players.create(player, function (err, res) {
-            message = "Created " + player;
+        else await pawns.create(body, function (err, res) {
+            message = "Created " + body;
             if (err)
                 message = "Created Error";
             console.log(message);
         });
         return message;
     }
-    async UpdateSquads(player) {
+    async UpdateSquad(body) {
         var message = "Error";
-        if (!player.Token) return "Error! No Token";
-        if (!player.Squads) return "Error! No Squads";
-        var myquery = { Token: player.Token };
-        var item = await players.findOne(myquery).exec();
-        var newvalues = { $set: { Squads: player.Squads } };
+        if (!body.Token) return "Error! No Token";
+        if (!body.Score) return "Error! No Score";
+        if (!body.Name) return "Error! No Name";
+        if (!body.PawnKeys) return "Error! No PawnKeys";
+        var myquery = { Token: body.Token, Name: body.Name };
+        var item = await squads.findOne(myquery).exec();
+        
+        var newvalues = { $set: { Squads: body.Squads } };
         console.log(item);
         await players.updateOne(myquery, newvalues, (err, item) => {
-            message = "Updated " + player;
+            message = "Updated " + body;
             if (err)
                 message = "Updated Error";
             console.log(message);
         })
         return message;
     }
-    async GetPawns(player) {
-        if (!player.Token) return "Error! No Token";
-        var myquery = { Token: player.Token };
+    async GetPawns(body) {
+        if (!body.Token) return "Error! No Token";
+        var myquery = { Token: body.Token };
         var pawns = await pawns.find(myquery).exec();
         return pawns;
     }
