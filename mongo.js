@@ -81,10 +81,15 @@ class Mongo {
         if (!body.PawnKeys) return "Error! No PawnKeys";
         var myquery = { Token: body.Token, Name: body.Name };
         var item = await squads.findOne(myquery).exec();
-        
-        var newvalues = { $set: { Squads: body.Squads } };
+        var newvalues = {
+            $set: {
+                PawnKeys: body.PawnKeys,
+                Score: body.Score,
+                Name: body.Name
+            }
+        };
         console.log(item);
-        await players.updateOne(myquery, newvalues, (err, item) => {
+        await squads.updateOne(myquery, newvalues, (err, item) => {
             message = "Updated " + body;
             if (err)
                 message = "Updated Error";
@@ -95,8 +100,8 @@ class Mongo {
     async GetPawns(body) {
         if (!body.Token) return "Error! No Token";
         var myquery = { Token: body.Token };
-        var pawns = await pawns.find(myquery).exec();
-        return pawns;
+        var message = await pawns.find(myquery).exec();
+        return message;
     }
     async GetRandomPlayer(player) {
         if (!player.Token) return "Error! No Token";
