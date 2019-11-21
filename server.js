@@ -21,14 +21,17 @@ else {
 
     app.post("/GetPawns", async (req, res) => {
         console.log(req.body);
-        var message = await db.GetPlayer(req.body);
-        if (message.Pawns)
-            res.send(message.Pawns);
-        else res.send("Pawns for this player not found");
+        var message = await db.GetPawns(req.body);
+        res.send(message);
     });
-    app.post("/UpdatePawns", async (req, res) => {
+    app.post("/DeletePawn", async (req, res) => {
         console.log(req.body);
-        var message = await db.UpdatePawns(req.body);
+        var message = await db.DeletePawn(req.body);
+        res.send(message);
+    });
+    app.post("/UpdatePawn", async (req, res) => {
+        console.log(req.body);
+        var message = await db.UpdatePawn(req.body);
         res.send(message);
     });
     app.post("/FindOpponent", async (req, res) => {
