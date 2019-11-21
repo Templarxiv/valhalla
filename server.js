@@ -36,20 +36,23 @@ else {
     });
     app.post("/FindOpponent", async (req, res) => {
         console.log(req.body);
-        var message = await db.GetRandomPlayer(req.body);
+        var message = await db.GetRandomSquad(req.body);
         res.send(message);
     });
-    app.post("/UpdateSquads", async (req, res) => {
+    app.post("/UpdateSquad", async (req, res) => {
         console.log(req.body);
-        var message = await db.UpdateSquads(req.body);
+        var message = await db.UpdateSquad(req.body);
         res.send(message);
     });
     app.post("/GetSquads", async (req, res) => {
         console.log(req.body);
-        var message = await db.GetPlayer(req.body);
-        if (message.Squads)
-            res.send(message.Squads);
-        else res.send("Squads for this player not found");
+        var message = await db.GetSquads(req.body);
+        res.send(message.Squads);
+    });
+    app.post("/DeleteSquad", async (req, res) => {
+        console.log(req.body);
+        var message = await db.DeleteSquad(req.body);
+        res.send(message);
     });
     app.get("/GetName", (req, res) => {
         var names = require('fs').readFileSync('./LatinNames.txt', 'utf-8').split(/\r?\n/);

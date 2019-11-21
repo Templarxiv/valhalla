@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 var squadsShema = mongoose.Schema({
     Token: String,
     Score: Number,
+    SquadKey: String,
     Name: String,
     PawnKeys: String,
 });
@@ -73,18 +74,30 @@ class Mongo {
         });
         return message;
     }
+    async DeleteSquad(body) {
+        var message = "Error";
+        if (!body.SquadKey) return "Error! No Token";
+        var myquery = { SquadKey: body.SquadKey };
+        squads.findOneAndRemove(myquery, function (err) {
+            message = "Error";
+        }).exec();
+        return message;
+    }
     async UpdateSquad(body) {
         var message = "Error";
         if (!body.Token) return "Error! No Token";
         if (!body.Score) return "Error! No Score";
         if (!body.Name) return "Error! No Name";
         if (!body.PawnKeys) return "Error! No PawnKeys";
+        if (!body.SquadKey) return "Error! No SquadKey";
         var myquery = { Token: body.Token, Name: body.Name };
         var item = await squads.findOne(myquery).exec();
         var newvalues = {
             $set: {
+                Token: body.Token,
                 PawnKeys: body.PawnKeys,
                 Score: body.Score,
+                SquadKey: body.SquadKey,
                 Name: body.Name
             }
         };
@@ -97,23 +110,44 @@ class Mongo {
         })
         return message;
     }
+    async GetSquads(body) {
+        if (!body.Token) return "Error! No Token";
+        var myquery = { Token: body.Token };
+        var message = await squads.find(myquery).exec();
+        return message;
+    }
     async GetPawns(body) {
         if (!body.Token) return "Error! No Token";
         var myquery = { Token: body.Token };
         var message = await pawns.find(myquery).exec();
         return message;
     }
-    async GetRandomPlayer(player) {
-        if (!player.Token) return "Error! No Token";
-        var allPlayers = await players.find({}).exec();
-        if (allPlayers.length < 2) return "Not enought players";
-        var randomPlayer = () => {
-            var randomUser = allPlayers[Math.floor(Math.random() * allPlayers.length)];
-            if (randomUser.Token == player.Token) return randomPlayer();
-            console.log(randomUser);
-            return randomUser;
+    async GetRandomSquad(body) {
+        if (!body.Score) return "Error! No Score";
+        var allSquads = await squads.find({}).exec();
+        if (allSquads.length < 2) return "Not enought squads";
+        var itterations = 0;
+        var randomSquad = () => {
+            itterations++;
+            if (itterations > 100) return "Error! Squads with nearest score not founds";
+            var randomSquad = allSquads[Math.floor(Math.random() * allSquads.length)];
+            if (randomSquad.Token == body.Token) return randomSquad();
+            if (Math.abs(randomSquad.Score - body.Score) <= 10) {
+                console.log(randomSquad);
+                return randomSquad;
+            }
+            else randomSquad();
         }
-        return randomPlayer();
+        var squad = randomSquad();
+        if (squad.Name) {
+            // var myquery = { PawnKey: body.PawnKey };
+            // squad.PawnKeys.forEach(key => {
+            //     var pawn = await pawns.find(myquery).exec();
+            // });
+            var pawns = await pawns.find().where('PawnKey').in(squad.PawnKeys);
+            return pawns;
+        }
+        else return squad;
     }
 }
 
