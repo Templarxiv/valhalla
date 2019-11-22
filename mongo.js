@@ -152,8 +152,8 @@ class Mongo {
             //     var pawn = await pawns.find(myquery).exec();
             // });
             var pawnsKeys = squad.PawnKeys.split(',');
-            var pawns = await pawns.find().where('PawnKey').in(pawnsKeys);
-            return { Message: pawns };
+            var pawnsArray = await pawns.find().where('PawnKey').in(pawnsKeys);
+            return { Message: pawnsArray };
         }
         else return squad;
     }
