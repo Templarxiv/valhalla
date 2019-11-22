@@ -70,21 +70,21 @@ class Mongo {
             var squadsArray = await squads.find({ Token: body.Token, PawnKeys: body.PawnKey }).exec();
             for (let a = 0; a < squadsArray.length; a++) {
                 const s = squadsArray[a];
-                var newScore = 0;
+                var totalScore = 0;
                 var oldScore = s.Score;
                 for (let b = 0; b < s.PawnKeys.length; b++) {
                     if (s.PawnKeys[b].length > 3) {
                         var pawn = await pawns.findOne({ Token: body.Token, PawnKey: s.PawnKeys[b] }).exec();
-                        newScore += pawn.Score;
+                        totalScore += pawn.Score;
                     }
                 }
                 var newScore = {
                     $set: {
-                        Score: newScore
+                        Score: totalScore
                     }
                 };
                 await squads.updateOne(s, newScore).exec();
-                console.log("Squad " + s.Name + " updated", "old score: " + oldScore, "new score: " + newScore);
+                console.log("Squad " + s.Name + " updated", "old score: " + oldScore, "new score: " + totalScore);
             }
         }
         else await pawns.create(body, function (err, res) {
