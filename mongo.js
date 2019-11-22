@@ -111,7 +111,7 @@ class Mongo {
         if (!body.Name) return "Error! No Name";
         if (!body.PawnKeys) return "Error! No PawnKeys";
         if (!body.SquadKey) return "Error! No SquadKey";
-        var myquery = { Token: body.Token, Name: body.SquadKey };
+        var myquery = { Token: body.Token, SquadKey: body.SquadKey };
         var item = await squads.findOne(myquery).exec();
         body.PawnKeys = body.PawnKeys.split(',');
         var newvalues = {
