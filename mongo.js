@@ -102,12 +102,19 @@ class Mongo {
             }
         };
         console.log(item);
-        await squads.updateOne(myquery, newvalues, (err, item) => {
-            message = "Updated " + body;
+        if (item)
+            await squads.updateOne(myquery, newvalues, (err, item) => {
+                message = "Updated " + body;
+                if (err)
+                    message = "Updated Error";
+                console.log(message);
+            })
+        else await squads.create(body, function (err, res) {
+            message = "Created " + body;
             if (err)
-                message = "Updated Error";
+                message = "Created Error";
             console.log(message);
-        })
+        });
         return message;
     }
     async GetSquads(body) {
@@ -145,7 +152,8 @@ class Mongo {
             // squad.PawnKeys.forEach(key => {
             //     var pawn = await pawns.find(myquery).exec();
             // });
-            var pawns = await pawns.find().where('PawnKey').in(squad.PawnKeys);
+            var pawnsKeys = squad.PawnKeys.split(',');
+            var pawns = await pawns.find().where('PawnKey').in(pawnsKeys);
             return pawns;
         }
         else return squad;
