@@ -172,7 +172,7 @@ class Mongo {
             for (let b = 0; b < squad.PawnKeys.length; b++) {
                 var pawn = "";
                 if (squad.PawnKeys[b].length > 3) {
-                    pawn = await pawns.findOne({ Token: body.Token, PawnKey: squad.PawnKeys[b] }).exec();
+                    pawn = await pawns.findOne({ Token: squad.Token, PawnKey: squad.PawnKeys[b] }).exec();
                 }
                 pawnsKeys.push(pawn);
             }
