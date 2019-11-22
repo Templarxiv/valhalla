@@ -60,13 +60,31 @@ class Mongo {
             }
         };
         console.log(item);
-        if (item)
+        if (item) {
             await pawns.updateOne(myquery, newvalues, (err, item) => {
                 message = "Updated " + body;
                 if (err)
                     message = "Updated Error";
                 console.log(message);
             })
+            var squadsArray = await squads.find({ PawnKeys: body.PawnKey }).exec();
+            for (let a = 0; a < squadsArray.length; a++) {
+                const s = squadsArray[a];
+                var newScore = 0;
+                var oldScore = s.Score;
+                for (let b = 0; b < s.PawnKeys.length; b++) {
+                    var pawn = await pawns.findOne({ PawnKey: s.PawnKeys[b] }).exec();
+                    newScore += pawn.Score;
+                }
+                var newScore = {
+                    $set: {
+                        Score: newScore
+                    }
+                };
+                await squads.updateOne(s, newScore).exec();
+                console.log("Squad " + s.Name + " updated", "old score: " + oldScore, "new score: " + newScore);
+            }
+        }
         else await pawns.create(body, function (err, res) {
             message = "Created " + body;
             if (err)
@@ -93,7 +111,7 @@ class Mongo {
         if (!body.SquadKey) return "Error! No SquadKey";
         var myquery = { Token: body.Token, Name: body.Name };
         var item = await squads.findOne(myquery).exec();
-        var pawnsArray =  body.PawnKeys.split(',');
+        var pawnsArray = body.PawnKeys.split(',');
         var newvalues = {
             $set: {
                 Token: body.Token,
