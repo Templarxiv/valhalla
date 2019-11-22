@@ -168,7 +168,7 @@ class Mongo {
             else randomSquadFunc();
         }
         var squad = randomSquadFunc();
-        if (squad.Name) {
+        if (squad) {
             // var myquery = { PawnKey: body.PawnKey };
             // squad.PawnKeys.forEach(key => {
             //     var pawn = await pawns.find(myquery).exec();
