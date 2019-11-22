@@ -160,12 +160,11 @@ class Mongo {
             itterations++;
             if (itterations > 100) return "Error! Squads with nearest score not founds";
             var randomSquad = allSquads[Math.floor(Math.random() * allSquads.length)];
-            if (randomSquad.Token == body.Token) return randomSquadFunc();
-            if (Math.abs(randomSquad.Score - body.Score) <= 10) {
+            if (randomSquad.Token == body.Token || Math.abs(randomSquad.Score - body.Score) > 10) return randomSquadFunc();
+            else {
                 console.log(randomSquad);
                 return randomSquad;
             }
-            else randomSquadFunc();
         }
         var squad = randomSquadFunc();
         if (squad) {
