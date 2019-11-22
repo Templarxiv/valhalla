@@ -111,12 +111,11 @@ class Mongo {
         if (!body.SquadKey) return "Error! No SquadKey";
         var myquery = { Token: body.Token, Name: body.Name };
         var item = await squads.findOne(myquery).exec();
-        var pawnsArray = body.PawnKeys.split(',');
-        console.log("Split result", pawnsArray);
+        body.PawnKeys = body.PawnKeys.split(',');
         var newvalues = {
             $set: {
                 Token: body.Token,
-                PawnKeys: pawnsArray,
+                PawnKeys: body.PawnKeys,
                 Score: body.Score,
                 SquadKey: body.SquadKey,
                 Name: body.Name
