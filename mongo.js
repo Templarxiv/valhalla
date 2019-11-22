@@ -10,7 +10,7 @@ var squadsShema = mongoose.Schema({
     Score: Number,
     SquadKey: String,
     Name: String,
-    PawnKeys: String,
+    PawnKeys: Array,
 });
 var pawnsShema = mongoose.Schema({
     Token: String,
@@ -93,10 +93,11 @@ class Mongo {
         if (!body.SquadKey) return "Error! No SquadKey";
         var myquery = { Token: body.Token, Name: body.Name };
         var item = await squads.findOne(myquery).exec();
+        var pawnsArray =  body.PawnKeys.split(',');
         var newvalues = {
             $set: {
                 Token: body.Token,
-                PawnKeys: body.PawnKeys.split(','),
+                PawnKeys: pawnsArray,
                 Score: body.Score,
                 SquadKey: body.SquadKey,
                 Name: body.Name
