@@ -112,6 +112,7 @@ class Mongo {
         var myquery = { Token: body.Token, Name: body.Name };
         var item = await squads.findOne(myquery).exec();
         var pawnsArray = body.PawnKeys.split(',');
+        console.log("Split result", pawnsArray);
         var newvalues = {
             $set: {
                 Token: body.Token,
