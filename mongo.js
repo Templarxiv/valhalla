@@ -121,14 +121,13 @@ class Mongo {
         if (!body.Token) return "Error! No Token";
         var myquery = { Token: body.Token };
         var message = await squads.find(myquery).exec();
-        return message;
+        return { Message: message };
     }
     async GetPawns(body) {
         if (!body.Token) return "Error! No Token";
         var myquery = { Token: body.Token };
         var message = await pawns.find(myquery).exec();
-        var respone = { Message: message };
-        return respone;
+        return { Message: message };
     }
     async GetRandomSquad(body) {
         if (!body.Score) return "Error! No Score";
@@ -154,7 +153,7 @@ class Mongo {
             // });
             var pawnsKeys = squad.PawnKeys.split(',');
             var pawns = await pawns.find().where('PawnKey').in(pawnsKeys);
-            return pawns;
+            return { Message: pawns };
         }
         else return squad;
     }
