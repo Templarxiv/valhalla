@@ -22,6 +22,7 @@ var pawnsShema = mongoose.Schema({
 
 var squads = {};
 var pawns = {};
+
 class Mongo {
     constructor() {
         this.Init();
@@ -95,7 +96,7 @@ class Mongo {
         var newvalues = {
             $set: {
                 Token: body.Token,
-                PawnKeys: body.PawnKeys,
+                PawnKeys: body.PawnKeys.split(','),
                 Score: body.Score,
                 SquadKey: body.SquadKey,
                 Name: body.Name
@@ -151,7 +152,7 @@ class Mongo {
             // squad.PawnKeys.forEach(key => {
             //     var pawn = await pawns.find(myquery).exec();
             // });
-            var pawnsKeys = squad.PawnKeys.split(',');
+            var pawnsKeys = squad.PawnKeys;
             var pawnsArray = await pawns.find().where('PawnKey').in(pawnsKeys);
             return { Message: pawnsArray };
         }
