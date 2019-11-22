@@ -47,7 +47,7 @@ else {
     app.post("/GetSquads", async (req, res) => {
         console.log(req.body);
         var message = await db.GetSquads(req.body);
-        res.send(message.Squads);
+        res.send(message);
     });
     app.post("/DeleteSquad", async (req, res) => {
         console.log(req.body);
