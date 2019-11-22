@@ -168,13 +168,16 @@ class Mongo {
         }
         var squad = randomSquadFunc();
         if (squad) {
-            // var myquery = { PawnKey: body.PawnKey };
-            // squad.PawnKeys.forEach(key => {
-            //     var pawn = await pawns.find(myquery).exec();
-            // });
-            var pawnsKeys = squad.PawnKeys;
-            var pawnsArray = await pawns.find().where('PawnKey').in(pawnsKeys);
-            return { Message: pawnsArray };
+            var pawnsKeys = [];
+            for (let b = 0; b < squad.PawnKeys.length; b++) {
+                var pawn = "";
+                if (squad.PawnKeys[b].length > 3) {
+                    pawn = await pawns.findOne({ Token: body.Token, PawnKey: squad.PawnKeys[b] }).exec();
+                }
+                pawnsKeys.push(pawn);
+            }
+            // var pawnsArray = await pawns.find().where('PawnKey').in(pawnsKeys);
+            return { Message: pawnsKeys };
         }
         else return squad;
     }
