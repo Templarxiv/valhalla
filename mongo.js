@@ -134,18 +134,18 @@ class Mongo {
         var allSquads = await squads.find({}).exec();
         if (allSquads.length < 2) return "Not enought squads";
         var itterations = 0;
-        var randomSquad = () => {
+        var randomSquadFunc = () => {
             itterations++;
             if (itterations > 100) return "Error! Squads with nearest score not founds";
             var randomSquad = allSquads[Math.floor(Math.random() * allSquads.length)];
-            if (randomSquad.Token == body.Token) return randomSquad();
+            if (randomSquad.Token == body.Token) return randomSquadFunc();
             if (Math.abs(randomSquad.Score - body.Score) <= 10) {
                 console.log(randomSquad);
                 return randomSquad;
             }
-            else randomSquad();
+            else randomSquadFunc();
         }
-        var squad = randomSquad();
+        var squad = randomSquadFunc();
         if (squad.Name) {
             // var myquery = { PawnKey: body.PawnKey };
             // squad.PawnKeys.forEach(key => {
