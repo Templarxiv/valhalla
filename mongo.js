@@ -67,14 +67,16 @@ class Mongo {
                     message = "Updated Error";
                 console.log(message);
             })
-            var squadsArray = await squads.find({ PawnKeys: body.PawnKey }).exec();
+            var squadsArray = await squads.find({ Token: body.Token, PawnKeys: body.PawnKey }).exec();
             for (let a = 0; a < squadsArray.length; a++) {
                 const s = squadsArray[a];
                 var newScore = 0;
                 var oldScore = s.Score;
                 for (let b = 0; b < s.PawnKeys.length; b++) {
-                    var pawn = await pawns.findOne({ PawnKey: s.PawnKeys[b] }).exec();
-                    newScore += pawn.Score;
+                    if (s.PawnKeys[b].length > 3) {
+                        var pawn = await pawns.findOne({ Token: body.Token, PawnKey: s.PawnKeys[b] }).exec();
+                        newScore += pawn.Score;
+                    }
                 }
                 var newScore = {
                     $set: {
